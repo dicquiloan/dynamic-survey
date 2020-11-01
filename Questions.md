@@ -4,4 +4,4 @@
 2. Does it snow in the winter time?
 3. Is the air quality clean?
 4. Have you ever tried Mexican food?
-5. Are the Lakers the basketball team?
+5. Did the Lakers win the NBA playoffs and did the Dodgers win the World Series in 2020?
