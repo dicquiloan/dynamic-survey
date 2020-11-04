@@ -22,8 +22,10 @@
 3: Agree
 4: Definitely
 
-1. Is your drive to work more than 30 minutes?
-2. Does it snow in the winter time where you live?
-3. Is the air quality clean where you live?
-4. Have you ever tried Mexican food?
-5. Did the Lakers win the NBA playoffs and did the Dodgers win the World Series in 2020?
+1. I can get from my house to the beach by car in less than an hour. 
+2. I have been to a place that I have seen in the background of a movie.
+3. I don't own any heavy coats or heavy jackets.
+4. I eat Mexican food at least once a month. 
+5. I live somewhere where the seasons are not distinct from each other.  
+6. I have seen a food truck near my work or school in the last month. 
+7. 
