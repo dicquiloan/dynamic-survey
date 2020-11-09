@@ -7,7 +7,6 @@ def index(request):
         dataDict = {
                 'questionList': Question.objects.all(),
                 }
-        return render(request, 'LApoll/index.html', dataDict)
-        
-    
-        
+        return render(request, 'LApoll/survey.html', dataDict)
+def showResults(request):
+	return HttpResponse("YOU SUBMITTED THE FORM")	 

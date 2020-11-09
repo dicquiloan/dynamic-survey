@@ -1,0 +1,23 @@
+<h1>
+        Welcome to LApoll
+</h1>
+<p> please answer as truthfully as you can </p>
+
+{% load static %}
+<form method="post" action="/results" id="form1">
+{%csrf_token%}
+<ol>
+{% for question in questionList %}
+        <li> {{question.text}}
+                <input type="checkbox" name="answer{{question.id}}">
+                <br>
+                on a rating from 1 to 5, how well do you think this question correctly
+                predicts whether a person lives in Los Angeles County or not?
+                <input type="text" maxLength="1" oninput="this.value=this.value.replace(/[^0-9]/g,'');">
+        </li>
+{% endfor %}
+</ol>
+
+<input type="submit" value="submit">
+
+</form>

@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'dynamicSurveyOP.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'la_poll_data',
+        'NAME': 'la_poll_data_weasel',
         'USER': 'dbadmin',
         'PASSWORD': 'tankelevich'
     }
