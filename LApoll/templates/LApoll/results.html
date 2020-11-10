@@ -1,0 +1,25 @@
+<h1>
+        Welcome to LApoll
+</h1>
+<p> please answer as truthfully as you can </p>
+
+{% load static %}
+{%csrf_token%}
+<ol>
+{% for response in responseList %}
+        <li> {{response.question.text}}
+       		<ul>
+			<li>Answer: {{response.answer}} </li>
+			<li>QuestionRating: {{response.rating}} </li>
+		</ul>
+        </li>
+{% endfor %}
+</ol>
+<h3> logistic regression confidence: </h3>
+<h3> KNN confidence: </h3>
+<h3> SVM confidence: </h3>
+<h3> RBM confidence: </h3>
+
+<h1> actually lives in LA: {{livesInLA}} </h1>
+
+</form>
