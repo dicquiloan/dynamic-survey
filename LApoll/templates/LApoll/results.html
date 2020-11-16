@@ -1,7 +1,9 @@
 <h1>
-        Welcome to LApoll
+        Thank you for your contribution.
 </h1>
-<p> please answer as truthfully as you can </p>
+<p style="color: purple"> Results will not be available until enough data is 
+gathered. 
+</p>
 
 {% load static %}
 {%csrf_token%}
@@ -16,17 +18,13 @@
 {% endfor %}
 </ol>
 
-<ol>
-{% for questionStat in questionStatsList %}
-<li> average score: {{ questionStat.avgAnswer }} average rating: {{ questionStat.avgRating }}</li>
-{% endfor %}
-</ol>
-
-
+<!--
 <h3> logistic regression confidence: </h3>
 <h3> KNN confidence: </h3>
 <h3> SVM confidence: </h3>
 <h3> RBM confidence: </h3>
+
+-->
 
 <h1> actually lives in LA: {{livesInLA}} </h1>
 
