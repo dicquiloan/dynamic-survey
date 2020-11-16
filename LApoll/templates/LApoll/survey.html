@@ -17,18 +17,25 @@
 			<p>
 				This survey is being used to help us test some tools and ideas related to machine learning. 
 				All data submitted is totally anonymous and we store no identifying information linking back to 
-				you. Please select all the questions you agree with and give question a rating, then click submit.
-				Feel free to email us at <a href="mailto : dynamicsurvey080@gmail.com">  
+				you. Feel free to email us at <a href="mailto : dynamicsurvey080@gmail.com">  
 				dynamicsurvey080@gmail.com</a> if you have any questions. 
-				<b> We appreciate your time and submission data! </b>
 	
 			</p>
+			<p>
+				for each question, please supply 2 pieces of information:
+				<ol>
+					<li> an answer to the question</li>
+					<li> an opinion on how good the question is</li>
+				</ol>
+				When you are done, click submit
+			</p>
+			<p> <b> We appreciate your time and submission data! </b> </p>
 
 		</div>
 		<div id="top1">
 			<div id="top1Space"></div>
 			<h2 id="ratingsQuestion">
-				You would use this question if you were trying to guess if someone lives in Los Angeles
+				This question could be used to predict whether someone lives in Los Angeles or not 
 			</h2>
 		</div>	
 		<div id="top2"> 
@@ -76,19 +83,19 @@
 					</div>
 					<div class="spacer"> </div>
 					<div class="ratingsContainer">
-						<div class="rating tDis">
+						<div class="rating">
 							<input type="radio" required name="rating{{question.id}}" value="1">
 						</div>
-						<div class="rating dis">
+						<div class="rating">
 							<input type="radio" required name="rating{{question.id}}" value="2">
 						</div>
-						<div class="rating neut">
+						<div class="rating">
 							<input type="radio" required name="rating{{question.id}}" value="3">
 						</div>
-						<div class="rating ag">
+						<div class="rating">
 							<input type="radio" required name="rating{{question.id}}" value="4">
 						</div>
-						<div class="rating tAg">
+						<div class="rating">
 							<input type="radio" required name="rating{{question.id}}" value="5">
 						</div>
 					</div>
@@ -98,7 +105,7 @@
 		</div>
 
 		<div id="laRow">
-			<h3>Do you currently live in Los Angeles? </h3>
+			<h3>I currently live in Los Angeles</h3>
 			<div class="yes" style="margin: auto 0">yes<input type="radio" required name="livesInLA" value="1"></div>
 			<div class="no" style="margin: auto 0">no<input type="radio" required name="livesInLA" value="0"></div>
 		</div>	

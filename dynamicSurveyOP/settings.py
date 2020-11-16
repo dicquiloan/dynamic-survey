@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'dynamicSurveyOP.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'la_poll_data_weasel',
+        'NAME': 'la_poll_data',
         'USER': 'dbadmin',
         'PASSWORD': 'tankelevich'
     }
@@ -121,4 +121,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = '/home/weasel/dynamicSurveyWeasel/dynamicSurveyRepo/static'
+STATIC_ROOT = '/home/weasel/dynamicSurveyOP/dynamicSurveyRepo/static'

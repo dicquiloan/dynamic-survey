@@ -36,7 +36,7 @@ def populateDB():
         tempQuestion = Question(text = questionText)
         tempQuestion.save()
 
-
+"""
     for x in range(10):
         p = Participant(livesInLA = False)
         p.save()
@@ -130,4 +130,4 @@ def populateDB():
         qr20 = QuestionResponse(participant = Participant.objects.get(pk=p.id), question = Question.objects.get(pk = 20), answer = 1, rating = 1)
         qr20.save()
 
-
+"""
