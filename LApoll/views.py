@@ -2,11 +2,12 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from .models import *
 from .algorithms import *
+import random
 
 def index(request):
 	dataDict = {
 		'coolGuyName': 'Chen Wei',
-		'questionList': Question.objects.all(),
+		'questionList': Question.objects.all().order_by('?')
 	}
 	return render(request, 'LApoll/survey.html', dataDict)
 
