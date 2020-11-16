@@ -1,0 +1,109 @@
+body{
+	background: #becae8;
+}
+#formContainer{
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+#top1{
+	display: flex;
+	width:100%;
+	/*height: 20%;*/
+}
+#top1Space{
+	width: 70%;
+}
+#ratingsQuestion{
+	width: 30%;
+}
+#top2{
+	/* height: 10%; */
+	width:100%;
+	display: flex;
+}
+#top2Space{
+	width: 60%;
+}
+.answersContainer{
+	width: 6%;
+	display: flex;
+}
+
+.answer{
+	width:50%;
+}
+
+.spacer{
+	width: 4%;
+}
+
+.ratingsContainer{
+	width: 30%;
+	display: flex;
+}
+
+.rating{
+	width: 20%;
+	text-align: center;
+}
+
+#rowsContainer{
+	display: flex;
+	flex-direction: column;
+}
+
+.questionRow{
+	display: flex;
+	width: 100%;
+	margin: 5px 0px 0px 0px;
+}
+.questionText{
+	width: 60%;
+}
+
+.questionRow:nth-child(even){
+	background: #6B9BA4;
+}
+
+.questionRow:nth-child(odd){
+	background: #6BA478;
+}
+
+.answer
+{
+	text-align: center;
+}
+.yes{
+	background: green;
+}
+
+.no{
+	background: red;
+}
+
+.tDis{
+	background: #ac906c;
+}
+
+.dis{
+	background: #aca66c;
+}
+
+.neut{
+	background: #71ac6c;
+}
+
+.ag{
+	background: #6caca2;
+}
+
+.tAg{
+	background: #6c70ac;
+}
+#laRow{
+	display: flex;
+	justify-content: flex-start;
+}
