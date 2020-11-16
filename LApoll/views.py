@@ -1,13 +1,15 @@
 from django.shortcuts import render
-
 from django.http import HttpResponse
 from .models import *
+from .algorithms import *
 
 def index(request):
-        dataDict = {
-                'questionList': Question.objects.all(),
-                }
-        return render(request, 'LApoll/survey.html', dataDict)
+	dataDict = {
+		'coolGuyName': 'Chen Wei',
+		'questionList': Question.objects.all(),
+	}
+	return render(request, 'LApoll/survey.html', dataDict)
+
 
 def showResultsWithoutDB(request):
 	if request.method != 'POST':
@@ -57,12 +59,12 @@ def showResults(request):
 	for x in range (1,21):
 		responseList.append({
 			'questionText': Question.objects.get(id=x).text,
-			'answer': 1 if request.POST.__contains__(('answer'+str(x))) else 0,
+			'answer': int(request.POST['answer'+str(x)]),
 			'rating': int(request.POST['rating'+str(x)])
 		})
 	
 	
-	participantLivesInLA =  1 if request.POST.__contains__('livesInLA') else 0
+	participantLivesInLA =  int(request.POST['livesInLA'])
 
 	p = Participant(livesInLA = participantLivesInLA)
 	p.save()
@@ -73,10 +75,13 @@ def showResults(request):
 
 	#CALL MODEL GENERATING/PREDICTION ALGORITHMS HERE
 
+	questionStatsList= [ {'avgAnswer': knn.avgQuestionAnswer(qid), 'avgRating': knn.avgQuestionRating(qid)} for qid in range(1,21) ] 	
+
 	dataDict = {
 		'responseList': QuestionResponse.objects.filter(participant=p),
 		'livesInLA': p.livesInLA,
-		#ADD VALUES TO DISPLAY HERE
+		#ADD VALUES TO DISPLAY HEREa
+		'questionStatsList': questionStatsList
 	}
 
 	return render(request, 'LApoll/results.html', dataDict)
