@@ -1,3 +1,5 @@
+"""WHOAAA"""
+
 """
 Django settings for dynamicSurveyOP project.
 
@@ -77,7 +79,7 @@ WSGI_APPLICATION = 'dynamicSurveyOP.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'la_poll_data',
+        'NAME': 'weasel_test',
         'USER': 'dbadmin',
         'PASSWORD': 'tankelevich'
     }

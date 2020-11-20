@@ -39,3 +39,10 @@ def getLivesInLAAsTargetArray():
 
 def getQuestionResponseAnswersFromParticipant(pid):
 	return numpy.array(qr.answer for qr in QuestionResponse.objects.filter(participant__id = pid)) 
+
+def getQuestionResponseRatingsForQuestion(qid):
+	return [qr.rating for qr in QuestionResponse.objects.filter(question__id = qid)]
+
+def getAverageQuestionResponseRatingForQuestion(qid):
+	ratingsForQuestion = getQuestionResponseRatingsForQuestion(qid)
+	return 
