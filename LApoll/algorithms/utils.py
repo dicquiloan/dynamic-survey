@@ -33,4 +33,6 @@ def ratingsForQuestion(qid):
 def getQuestionResponseRatingAverageForQuestion(qid):
 	ratingsForQuestion = getQuestionResponseRatingsForQuestion(qid)
 	return functools.reduce(lambda x,y : x+y, ratingsForQuestion, 0)/len(ratingsForQuestion)
-	 
+
+def numberFromLAInRange(minPID, maxPID):
+	return Participant.objects.filter(id__gte = minPID).filter(id__lte = maxPID).filter(livesInLA = 1).count()

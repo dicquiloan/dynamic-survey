@@ -86,3 +86,60 @@ def showResults(request):
 	}
 
 	return render(request, 'LApoll/results.html', dataDict)
+
+
+def showComparison(request):
+	#default min and max IDs extend the whole range of participants
+	minTrainingID = 1
+	maxTrainingID = Participant.objects.count()
+	minTestingID = 1
+	maxTestingID = Participant.objects.count()
+		
+	#if the user hit submit button, use form submitted values for ID ranges
+	if request.method=="POST":
+		minTrainingID = int(request.POST['minTrainingID'])
+		maxTrainingID = int(request.POST['maxTrainingID'])
+		minTestingID = int(request.POST['minTestingID'])
+		maxTestingID = int(request.POST['maxTestingID'])
+		
+	# if min and max are out of order, swap them 	
+	if minTrainingID > maxTrainingID:
+		temp = minTrainingID
+		minTrainingID = maxTrainingID
+		maxTrainingID = temp
+
+	if minTestingID > maxTestingID:
+		temp = minTestingID
+		minTestingID = maxTestingID
+		maxTestingID = temp	
+	
+	#set set sizes
+	trainingSetSize = maxTrainingID-minTrainingID + 1
+	testingSetSize = maxTestingID - minTestingID + 1 
+	#get guesses for each approach
+	KNNGuessedCorrectly = knn.guessedCorrectly(minTrainingID, maxTrainingID, minTestingID, maxTestingID)
+	SVMGuessedCorrectly = svm.guessedCorrectly(minTrainingID, maxTrainingID, minTestingID, maxTestingID)
+	#'LRGuessedCorrectly': lr.guessedCorrectly(minTrainingID, maxTrainingID, minTestingID, maxTestingID)
+	#'RBMGuessedCorrectly': rbm.guessedCorrectly(minTrainingID, maxTrainingID, minTestingID, maxTestingID)
+	
+	dataDict = {
+		'minID' : 1,
+		'maxID' : Participant.objects.count(),
+		'minTrainingID': minTrainingID,
+		'maxTrainingID': maxTrainingID,
+		'minTestingID': minTestingID,
+		'maxTestingID': maxTestingID,
+		'trainingSetSize': maxTrainingID-minTrainingID+1,
+		'testingSetSize': maxTestingID-minTestingID +1 ,
+		
+		'KNNGuessedCorrectly': KNNGuessedCorrectly,
+		'KNNGuessedIncorrectly': testingSetSize - KNNGuessedCorrectly,
+		'KNNPercentGuessedCorrectly': KNNGuessedCorrectly / testingSetSize,
+		'SVMGuessedCorrectly': SVMGuessedCorrectly, 	
+		'SVMGuessedIncorrectly': testingSetSize - SVMGuessedCorrectly,
+		'SVMPercentGuessedCorrectly': SVMGuessedCorrectly / testingSetSize,
+		'percentFromLA': utils.numberFromLAInRange(minTrainingID, maxTrainingID) / trainingSetSize
+
+	}
+
+	return render(request, 'LApoll/compare.html', dataDict)
