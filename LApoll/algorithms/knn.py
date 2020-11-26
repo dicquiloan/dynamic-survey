@@ -20,11 +20,11 @@ def generateKNNCategorizationProbability(minTrainingID, maxTrainingID, participa
 
 def guessedCorrectly(minTrainingID, maxTrainingID, minTestingID, maxTestingID):
 	knnModel = generateKNNModel(minTrainingID, maxTrainingID)
-	livesInLAPrediction = knnModel.predict(utils.answersAsFeaturesArray(minTestingID, maxTestingID))
-	livesInLA = utils.livesInLAAsTargetArray(minTestingID, maxTestingID)
+	livesInLAPredictionsList = knnModel.predict(utils.answersAsFeaturesArray(minTestingID, maxTestingID))
+	livesInLAList = utils.livesInLAAsTargetArray(minTestingID, maxTestingID)
 	total = 0
-	for i in range(0, len(livesInLA)):
-		if livesInLAPrediction[i] == livesInLA[i]:
+	for i in range(0, len(livesInLAList)):
+		if livesInLAPredictionsList[i] == livesInLAList[i]:
 			total = total + 1
 	return total
 

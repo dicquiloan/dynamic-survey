@@ -138,7 +138,7 @@ def showComparison(request):
 		'SVMGuessedCorrectly': SVMGuessedCorrectly, 	
 		'SVMGuessedIncorrectly': testingSetSize - SVMGuessedCorrectly,
 		'SVMPercentGuessedCorrectly': SVMGuessedCorrectly / testingSetSize,
-		'percentFromLA': utils.numberFromLAInRange(minTrainingID, maxTrainingID) / trainingSetSize
+		'percentFromLA': utils.participantCountFromLAInRange(minTrainingID, maxTrainingID) / trainingSetSize
 
 	}
 
