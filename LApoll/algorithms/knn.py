@@ -3,9 +3,9 @@ import functools
 from . import utilsClass
 
 
-def generateKNNModel(participantCollection, trainingQRCollection):
-	X = utilsClass.answersAsFeaturesArray(participantCollection, trainingQRCollection)
-	y = utilsClass.livesInLAAsTargetArray(participantCollection)
+def generateKNNModel(trainingQRCollection):
+	X = utilsClass.answersAsFeaturesArray(trainingQRCollection)
+	y = utilsClass.livesInLAAsTargetArray(trainingQRCollection)
 	#k is 5 by default
 	knnClassifier = KNeighborsClassifier()
 	knnClassifier.fit(X, y)
@@ -26,7 +26,7 @@ def generateKNNModel(minParticipantID, maxParticipantID):
 '''
 
 def generateKNNCategorizationProbability(trainingQRCollection, testingQRCollection, participantCollection, participantID):
-	knnModel = generateKNNModel(participantCollection, trainingQRCollection)
+	knnModel = generateKNNModel(trainingQRCollection)
 	return knnModel.predict_proba([utilsClass.answersFromParticipant(participantID, testingQRCollection)])[0][1]
 '''
 def generateKNNCategorizationProbability(minTrainingID, maxTrainingID, participantID):
@@ -35,9 +35,9 @@ def generateKNNCategorizationProbability(minTrainingID, maxTrainingID, participa
 '''
 
 def guessedCorrectly(trainingQRCollection, testingQRCollection, participantCollection):
-	knnModel = generateKNNModel(participantCollection, trainingQRCollection)
-	livesInLAPredictionsList = knnModel.predict(utilsClass.answersAsFeaturesArray(participantCollection, testingQRCollection))
-	livesInLAList = utilsClass.livesInLAAsTargetArray(participantCollection)
+	knnModel = generateKNNModel(trainingQRCollection)
+	livesInLAPredictionsList = knnModel.predict(utilsClass.answersAsFeaturesArray(testingQRCollection))
+	livesInLAList = utilsClass.livesInLAAsTargetArray(trainingQRCollection)
 	total = 0
 	for i in range(0, len(livesInLAList)):
 		if livesInLAPredictionsList[i] == livesInLAList[i]:

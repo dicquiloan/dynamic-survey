@@ -14,25 +14,33 @@ def getQuestionResponsesInParticipantRange(minParticipantID, maxParticipantID, o
 	else:
 		return QuestionResponse.objects.order_by("participant__id").filter(participant__id__range = (minParticipantID, maxParticipantID))
 
-def getParticipantsInRange(minParticipantID, maxParticipantID, onlyFromLA = False):
+def getParticipantsInRange(minParticipantID, maxParticipantID, onlyFromLA=False):
 	if onlyFromLA:
 		return Participant.objects.order_by("id").filter(id__range=(minParticipantID, maxParticipantID)).filter(livesInLA = 1)
-	else:
+	else: 
 		return Participant.objects.order_by("id").filter(id__range=(minParticipantID, maxParticipantID))
 
 #FEATURES ARRAYS####################################################################
 
-def answersAsFeaturesArray(ParticipantCollection, QuestionResponseCollection):
+def answersAsFeaturesArray(QuestionResponseCollection):
 	twoDimensionalFeaturesList = []
-	for participant in ParticipantCollection:
-		twoDimensionalFeaturesList.append([qr.answer for qr in QuestionResponseCollection.filter(participant__id = participant.id)])
+	for pid in QuestionResponseCollection.values_list("participant__id", flat=True).distinct():
+		twoDimensionalFeaturesList.append(answersFromParticipant(pid, QuestionResponseCollection))
 	return numpy.array(twoDimensionalFeaturesList)
 
 #TARGET ARRAYS########################################################################
 
+def livesInLAAsTargetArray(QuestionResponseCollection):
+	livesInLAList = []
+	for pid in QuestionResponseCollection.order_by("participant__id").values_list("participant__id", flat="True").distinct():
+		livesInLAList.append(Participant.objects.get(id=pid).livesInLA)
+	return numpy.array(livesInLAList)
+
+'''
+
 def livesInLAAsTargetArray(ParticipantCollection):
 	return numpy.array([p.livesInLA for p in ParticipantCollection.order_by("id")])
-
+'''
 #ANSWERS##############################################################################
 
 def answersFromParticipant(pid, QuestionResponseCollection):

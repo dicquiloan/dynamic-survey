@@ -4,9 +4,9 @@ from . import utilsClass
 
 
 
-def generateSVMModel(trainingQRCollection, participantCollection):
-	X = utilsClass.answersAsFeaturesArray(participantCollection, trainingQRCollection)
-	y = utilsClass.livesInLAAsTargetArray(participantCollection)
+def generateSVMModel(trainingQRCollection):
+	X = utilsClass.answersAsFeaturesArray(trainingQRCollection)
+	y = utilsClass.livesInLAAsTargetArray(trainingQRCollection)
 	svmClassifier = SVC(gamma='auto').fit(X, y)
 
 	return svmClassifier
@@ -23,9 +23,9 @@ def generateSVMModel(minTrainingID, maxTrainingID):
 #no ability to get confidence that a particular guess is correct for this classifier
 
 def guessedCorrectly(trainingQRCollection, testingQRCollection, participantCollection):
-        svmModel = generateSVMModel(trainingQRCollection, participantCollection)
-        livesInLAPrediction = svmModel.predict(utilsClass.answersAsFeaturesArray(participantCollection, testingQRCollection))
-        livesInLA = utilsClass.livesInLAAsTargetArray(participantCollection)
+        svmModel = generateSVMModel(trainingQRCollection)
+        livesInLAPrediction = svmModel.predict(utilsClass.answersAsFeaturesArray(testingQRCollection))
+        livesInLA = utilsClass.livesInLAAsTargetArray(testingQRCollection)
         total = 0 
         for i in range(0, len(livesInLA)):
                 if livesInLAPrediction[i] == livesInLA[i]:
