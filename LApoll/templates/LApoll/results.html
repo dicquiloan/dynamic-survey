@@ -1,13 +1,14 @@
+<style>
+	td,tr {
+		border: black 2px solid;
+	}
+</style>
 <h1>
         Please only submit once. 
 	Thank you for your contribution!
 </h1>
-<p style="color: purple"> Results will not be available until enough data is 
-gathered. 
-</p>
 
 {% load static %}
-{%csrf_token%}
 <ol>
 {% for response in responseList %}
         <li> {{response.question.text}}
@@ -20,18 +21,35 @@ gathered.
 </ol>
 
 <h1>
-	How accurate are our guesses that you live in LA using different approaches? 
+	How confident are we that you actually live in LA using different approaches? 
 </h1>
 <p>
 	This uses the answers and ratings of all previous participants to train our models.
 </p>
-<!--<h3> logistic regression confidence: </h3> -->
-<h3> KNN confidence: {{KNNCategorizationProbability}}</h3>
-<h3> SVM confidence: {{}} </h3>
-<!--<h3> RBM confidence: </h3> -->
-<h3> Brian Algorithm Confidence: {{BrianCategorizationProbability}} </h3>
-
-
-<h1> actually lives in LA: {{livesInLA}} </h1>
-
-</form>
+<div id="resultsContainer">
+	<table>
+		<thead>
+			<tr>
+				<td>approach</td>
+				<td>training set size </td>
+				<td>confidence you live in LA </td>
+				<td>actually lives in LA </td>
+				<td>correct classification using .5 as cutoff</td>
+			</tr>
+		</thead>
+		<tr>
+			<td>KNN (k=5) </td>
+			<td>{{trainingSetSize}}</td>
+			<td>{{KNNCategorizationProbability}}</td>
+			<td> {{livesInLA}} </td>
+			<td>{{KNNGuessedCorrectly}}</td>
+		</tr>
+		<tr>
+			<td>Brian's Algorithm</td>
+			<td>{{trainingSetSize}}</td>
+			<td>{{BrianCategorizationProbability}}</td>
+			<td> {{livesInLA}} </td>
+			<td>{{BrianGuessedCorrectly}}</td>
+		</tr>
+	</table>
+</div>

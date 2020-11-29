@@ -74,21 +74,27 @@ def showResults(request):
 		qr = QuestionResponse(participant = p, question = Question.objects.get(pk=x+1), answer = responseList[x]['answer'], rating = responseList[x]['rating'])
 		qr.save()
 
-	#CALL MODEL GENERATING/PREDICTION ALGORITHMS HERE
+	#create model collection sets (should always include all participants except current)	
+	trainingQRCollection = utilsClass.getQuestionResponsesInParticipantRange(1, p.id -1);
+	testingQRCollection = utilsClass.getQuestionResponsesInParticipantRange(1, Participant.objects.count())
+	participantCollection = utilsClass.getParticipantsInRange(1, Participant.objects.count())
 
-	questionStatsList= [ {'avgAnswer': knn.avgQuestionAnswer(qid), 'avgRating': knn.avgQuestionRating(qid)} for qid in range(1,21) ] 	
-	
-	trainingQRCollection = utilsClass.getQuestionResponsesInRange(1, p.id -1);
-	testingQRCollection = utilsClass.getQuestionResponsesInRange(1, Participants.objects.count())
-	participantCollection = utilsClass.getParticipantsInRange(1, Participants.objects.count())
-	
+	#generate classification probability for this participant using all previous
+	KNNProb = knn.generateKNNCategorizationProbability(trainingQRCollection, testingQRCollection, participantCollection, p.id)
+	brianProb = brianClass.BrianModel(trainingQRCollection, testingQRCollection,participantCollection).probabilityLivesInLA(p.id)
+
+	#booleans for whether approaches classified correctly
+	KNNGuessedCorrectly = KNNProb > .5 if p.livesInLA else knnProb <=.5
+	BrianGuessedCorrectly = brianProb > .5 if p.livesInLA else brianProb <=.5
+
 	dataDict = {
 		'responseList': QuestionResponse.objects.filter(participant=p),
 		'livesInLA': p.livesInLA,
-		#ADD VALUES TO DISPLAY HEREa
-		'questionStatsList': questionStatsList,
-		'KNNCategorizationProbability': knn.generateKNNCategorizationProbability(trainingQRCollection, testingQRCollection, p.id),
-		'BrianCategorizationProbability': bnn.BrianModel(trainingQRCollection, testingQRCollection,participantCollection).probabilityLivesInLA(p.id)
+		'trainingSetSize': Participant.objects.count(),
+		'KNNCategorizationProbability': KNNProb,
+		'KNNGuessedCorrectly' : KNNGuessedCorrectly, 
+		'BrianCategorizationProbability': brianProb,
+		'BrianGuessedCorrectly': BrianGuessedCorrectly 
 	}
 
 	return render(request, 'LApoll/results.html', dataDict)
