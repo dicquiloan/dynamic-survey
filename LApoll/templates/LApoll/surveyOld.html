@@ -1,0 +1,31 @@
+<h1>
+        Welcome to LApoll
+</h1>
+<p> this survey is being used to help us test some tools and ideas related to machine learning. 
+We hope to take what we learn and create software that will benefit humanity and make life easier for everyone. 
+All data submitted is anonymous and has no identifying information linking back to you. 
+Please select all the questions you agree with and give question a rating, then click submit.
+Feel free to email us at dynamicsurvey080@gmail.com if you have any questions. 
+
+</p>
+<b> We appreciate you taking the time to help us by answering this survey! </b>
+
+{% load static %}
+<form method="POST" action="/results" id="form1">
+{%csrf_token%}
+<ol>
+{% for question in questionList %}
+        <li> {{question.text}}
+                <input type="checkbox" name="answer{{question.id}}">
+                <br>
+                on a rating from 1 to 5, how well do you think this question correctly
+                predicts whether a person lives in Los Angeles County or not?
+                <input type="text" name="rating{{question.id}}" maxLength="1" oninput="this.value=this.value.replace(/[^0-9]/g,'');">
+        </li>
+{% endfor %}
+</ol>
+
+<h3>Do you currently live in Los Angeles? <input type="checkbox" name="livesInLA"></h3>
+<input type="submit" value="submit">
+
+</form>
