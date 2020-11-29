@@ -116,18 +116,6 @@ def showComparison(request):
 	#set set sizes
 	trainingSetSize = maxTrainingID-minTrainingID + 1
 	testingSetSize = maxTestingID - minTestingID + 1 
-	
-	#get Model Arrays for test set, training set, and ???
-	trainingQRCollection = utils.getQuestionResponseInParticipantRange(1, 20, True)
-       	testingQRCollection = utils.getQuestionResponsesInParticipantRange(21, 50, True)
-	participantCollection = utils.getParticants(21, 50, True)	
-	
-
-
-
-	knnModel = generateKNNModel(participantCollection, testingCollection, trainingCollection) 
-
-
 	#get guesses for each approach
 	KNNGuessedCorrectly = knn.guessedCorrectly(minTrainingID, maxTrainingID, minTestingID, maxTestingID)
 	SVMGuessedCorrectly = svm.guessedCorrectly(minTrainingID, maxTrainingID, minTestingID, maxTestingID)

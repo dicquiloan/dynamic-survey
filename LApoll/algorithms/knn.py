@@ -3,6 +3,19 @@ import functools
 from . import utils 
 
 
+
+
+def generateKNNModel(participantCollection, trainingQRCollection):
+	X = utils.answersAsFeaturesArray(participantCollection, trainingQRCollection)
+	y = utils.livesInLAAsTargetArray(participantCollection)
+	#k is 5 by default
+	knnClassifier = KNeighborsClassifier()
+	knnClassifier.fit(X, y)
+
+	return knnClassifier
+
+
+'''
 def generateKNNModel(minParticipantID, maxParticipantID):
 	X = utils.answersAsFeaturesArray(minParticipantID, maxParticipantID)
 	y = utils.livesInLAAsTargetArray(minParticipantID, maxParticipantID)
@@ -11,7 +24,7 @@ def generateKNNModel(minParticipantID, maxParticipantID):
 	knnClassifier.fit(X, y)
 
 	return knnClassifier
-
+'''
 
 def generateKNNCategorizationProbability(minTrainingID, maxTrainingID, participantID):
 	knnModel = generateKNNModel(minTrainingID, maxTrainingID)
