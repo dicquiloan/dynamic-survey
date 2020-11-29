@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<link type="text/css" href="{% static '/css/compare.css' %}" rel="stylesheet"></link>
+	</head>
+
+	<body>
+		<div id="container">
+			<form action="compare" method="post">
+			{% csrf_token %}
+			<div id="formContainer">
+				<div class="formItem">
+					<label>minID for training set 
+						<input type="number" min={{minID}} max={{maxID}} value="{{minTrainingID}}" name="minTrainingID">
+					</label>
+				</div>
+				<div class="formItem">
+					<label>maxID for training set 
+						<input type="number" min={{minID}} max={{maxID}} value="{{maxTrainingID}}" name="maxTrainingID">
+					</label>
+				</div>
+				<div class="formItem">
+					<label>minID for test set 
+						<input type="number" min={{minID}} max={{maxID}} value="{{minTestingID}}" name="minTestingID">
+					</label>
+				</div>
+				<div class="formItem">
+					<label>maxID for test set 
+						<input type="number" min={{minID}} max={{maxID}} value="{{maxTestingID}}" name="maxTestingID">
+					</label>
+				</div>
+				<div class="formItem">
+					<label> only include participants from LA?
+						<input type="checkbox"> 
+					</label>
+					<input type="submit" value="update">	
+				</div>
+				</form>
+			</div>
+			<div id="resultsContainer">
+				<table>
+					<thead>
+						<tr>
+							<td>approach</td>
+							<td>training set size </td>
+							<td>testing set size </td>
+							<td>guessed correctly</td>
+							<td>guessed incorrectly </td> 
+							<td>% guessed correctly </td>
+							<td>% of training set from LA </td>
+						</tr>
+					</thead>
+					<tr>
+						<td>KNN</td>
+						<td>{{trainingSetSize}}</td>
+						<td>{{testingSetSize}}</td>
+						<td>{{KNNGuessedCorrectly}}</td>
+						<td>{{KNNGuessedIncorrectly}}</td>
+						<td>{{KNNPercentGuessedCorrectly}}</td>
+						<td>{{percentFromLA}}</td>
+					</tr>
+					<tr>
+						<td>SVM</td>
+						<td>{{trainingSetSize}}</td>
+						<td>{{testingSetSize}}</td>
+						<td>{{SVMGuessedCorrectly}}</td>
+						<td>{{SVMGuessedIncorrectly}}</td>
+						<td>{{SVMPercentGuessedCorrectly}}</td>
+						<td>{{percentFromLA}}</td>
+					</tr>
+					<tr>
+						<td>LR</td>
+						<td>{{trainingSetSize}}</td>
+						<td>{{testingSetSize}}</td>
+						<td>{{LRGuessedCorrectly}}</td>
+						<td>{{LRGuessedIncorrectly}}</td>
+						<td>{{LRPercentGuessedCorrectly}}</td>
+						<td>{{percentFromLA}}</td>
+					</tr>
+					<tr>
+						<td>RBM</td>
+						<td>{{trainingSetSize}}</td>
+						<td>{{testingSetSize}}</td>
+						<td>{{RBMGuessedCorrectly}}</td>
+						<td>{{RBMGuessedIncorrectly}}</td>
+						<td>{{RBMPercentGuessedCorrectly}}</td>
+						<td>{{percentFromLA}}</td>
+					</tr>
+					<tr>
+						<td>Chen's Algorithm</td>
+						<td>{{trainingSetSize}}</td>
+						<td>{{testingSetSize}}</td>
+						<td>{{ChenGuessedCorrectly}}</td>
+						<td>{{CHenGuessedIncorrectly}}</td>
+						<td>{{CHenPercentGuessedCorrectly}}</td>
+						<td>{{percentFromLA}}</td>
+					</tr>
+				</table>			
+			</div>
+		</div>
+	</body>
+</html>
