@@ -37,7 +37,7 @@ def generateKNNCategorizationProbability(minTrainingID, maxTrainingID, participa
 def guessedCorrectly(trainingQRCollection, testingQRCollection, participantCollection):
 	knnModel = generateKNNModel(trainingQRCollection)
 	livesInLAPredictionsList = knnModel.predict(utilsClass.answersAsFeaturesArray(testingQRCollection))
-	livesInLAList = utilsClass.livesInLAAsTargetArray(trainingQRCollection)
+	livesInLAList = utilsClass.livesInLAAsTargetArray(testingQRCollection)
 	total = 0
 	for i in range(0, len(livesInLAList)):
 		if livesInLAPredictionsList[i] == livesInLAList[i]:
