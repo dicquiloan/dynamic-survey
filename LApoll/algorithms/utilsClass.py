@@ -8,13 +8,13 @@ def dumpObject(inObj):
 
 
 #DJANGO MODEL COLLECTION GETTERS#########################################################
-def getQuestionResponsesInParticipantRange(minParticipantID, maxParticipantID, onlyFromLA):
+def getQuestionResponsesInParticipantRange(minParticipantID, maxParticipantID, onlyFromLA=False):
 	if onlyFromLA: 
 		return QuestionResponse.objects.order_by("participant__id").filter(participant__id__range = (minParticipantID, maxParticipantID)).filter(participant__livesInLA = 1)
 	else:
 		return QuestionResponse.objects.order_by("participant__id").filter(participant__id__range = (minParticipantID, maxParticipantID))
 
-def getParticipantsInRange(minParticipantID, maxParticipantID, onlyFromLA):
+def getParticipantsInRange(minParticipantID, maxParticipantID, onlyFromLA = False):
 	if onlyFromLA:
 		return Participant.objects.order_by("id").filter(id__range=(minParticipantID, maxParticipantID)).filter(livesInLA = 1)
 	else:
@@ -25,7 +25,7 @@ def getParticipantsInRange(minParticipantID, maxParticipantID, onlyFromLA):
 def answersAsFeaturesArray(ParticipantCollection, QuestionResponseCollection):
 	twoDimensionalFeaturesList = []
 	for participant in ParticipantCollection:
-		featuresList.append([qr.answer for qr in QuestionResponseCollection.filter(participant__id = participant.id)])
+		twoDimensionalFeaturesList.append([qr.answer for qr in QuestionResponseCollection.filter(participant__id = participant.id)])
 	return numpy.array(twoDimensionalFeaturesList)
 
 #TARGET ARRAYS########################################################################
