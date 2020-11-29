@@ -19,13 +19,18 @@ gathered.
 {% endfor %}
 </ol>
 
-<!--
-<h3> logistic regression confidence: </h3>
-<h3> KNN confidence: </h3>
-<h3> SVM confidence: </h3>
-<h3> RBM confidence: </h3>
+<h1>
+	How accurate are our guesses that you live in LA using different approaches? 
+</h1>
+<p>
+	This uses the answers and ratings of all previous participants to train our models.
+</p>
+<!--<h3> logistic regression confidence: </h3> -->
+<h3> KNN confidence: {{KNNCategorizationProbability}}</h3>
+<h3> SVM confidence: {{}} </h3>
+<!--<h3> RBM confidence: </h3> -->
+<h3> Brian Algorithm Confidence: {{BrianCategorizationProbability}} </h3>
 
--->
 
 <h1> actually lives in LA: {{livesInLA}} </h1>
 

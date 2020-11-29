@@ -77,18 +77,12 @@ def showResults(request):
 	#CALL MODEL GENERATING/PREDICTION ALGORITHMS HERE
 
 	questionStatsList= [ {'avgAnswer': knn.avgQuestionAnswer(qid), 'avgRating': knn.avgQuestionRating(qid)} for qid in range(1,21) ] 	
-	
-	trainingQRCollection = utilsClass.getQuestionResponsesInRange(1, p.id -1);
-	testingQRCollection = utilsClass.getQuestionResponsesInRange(1, Participants.objects.count())
-	participantCollection = utilsClass.getParticipantsInRange(1, Participants.objects.count())
-	
+
 	dataDict = {
 		'responseList': QuestionResponse.objects.filter(participant=p),
 		'livesInLA': p.livesInLA,
 		#ADD VALUES TO DISPLAY HEREa
-		'questionStatsList': questionStatsList,
-		'KNNCategorizationProbability': knn.generateKNNCategorizationProbability(trainingQRCollection, testingQRCollection, p.id),
-		'BrianCategorizationProbability': bnn.BrianModel(trainingQRCollection, testingQRCollection,participantCollection).probabilityLivesInLA(p.id)
+		'questionStatsList': questionStatsList
 	}
 
 	return render(request, 'LApoll/results.html', dataDict)
@@ -100,7 +94,6 @@ def showComparison(request):
 	maxTrainingID = Participant.objects.count()
 	minTestingID = 1
 	maxTestingID = Participant.objects.count()
-	trainWithOnlyLA = False
 		
 	#if the user hit submit button, use form submitted values for ID ranges
 	if request.method=="POST":
@@ -108,7 +101,6 @@ def showComparison(request):
 		maxTrainingID = int(request.POST['maxTrainingID'])
 		minTestingID = int(request.POST['minTestingID'])
 		maxTestingID = int(request.POST['maxTestingID'])
-		trainWithOnlyLA = True if 'trainWithOnlyLA' in request.POST else False
 		
 	# if min and max are out of order, swap them 	
 	if minTrainingID > maxTrainingID:
@@ -121,31 +113,14 @@ def showComparison(request):
 		minTestingID = maxTestingID
 		maxTestingID = temp	
 	
-	#get Model Arrays for test set, training set, participant set
-	trainingQRCollection = utilsClass.getQuestionResponsesInParticipantRange(minTrainingID, maxTrainingID, trainWithOnlyLA)
-	#whole goal is to check accuracy on predictions across the board. training can
-	#be filtered by "only in la" but not testing
-	testingQRCollection = utilsClass.getQuestionResponsesInParticipantRange(minTestingID, maxTestingID, False)
-	participantCollection = utilsClass.getParticipantsInRange(minTestingID, maxTestingID)	
-
-	#calculate set sizes
-	#will be multiple QRs for each participant, so count only QRs with question id 1 to 
-	#get number of participants 
-	trainingSetSize = trainingQRCollection.filter(question__id=1).count()
-	testingSetSize = testingQRCollection.filter(question__id =1).count()
-	
-	#make predictions
-	KNNGuessedCorrectly = knn.guessedCorrectly(trainingQRCollection, testingQRCollection, participantCollection)
-	#SVM algorithm needs target array with variation
-	if trainWithOnlyLA:
-		SVMGuessedCorrectly = 0
-	else:
-		SVMGuessedCorrectly = svm.guessedCorrectly(trainingQRCollection, testingQRCollection, participantCollection)
-
-	
-	brianModel = brianClass.BrianModel(trainingQRCollection, testingQRCollection, participantCollection)
-	BrianGuessedCorrectly = brianModel.guessedCorrectly(.5)
-		
+	#set set sizes
+	trainingSetSize = maxTrainingID-minTrainingID + 1
+	testingSetSize = maxTestingID - minTestingID + 1 
+	#get guesses for each approach
+	KNNGuessedCorrectly = knn.guessedCorrectly(minTrainingID, maxTrainingID, minTestingID, maxTestingID)
+	SVMGuessedCorrectly = svm.guessedCorrectly(minTrainingID, maxTrainingID, minTestingID, maxTestingID)
+	#'LRGuessedCorrectly': lr.guessedCorrectly(minTrainingID, maxTrainingID, minTestingID, maxTestingID)
+	#'RBMGuessedCorrectly': rbm.guessedCorrectly(minTrainingID, maxTrainingID, minTestingID, maxTestingID)
 	
 	dataDict = {
 		'minID' : 1,
@@ -154,18 +129,17 @@ def showComparison(request):
 		'maxTrainingID': maxTrainingID,
 		'minTestingID': minTestingID,
 		'maxTestingID': maxTestingID,
-		'trainingSetSize': trainingSetSize,
-		'testingSetSize': testingSetSize, 	
+		'trainingSetSize': maxTrainingID-minTrainingID+1,
+		'testingSetSize': maxTestingID-minTestingID +1 ,
+		
 		'KNNGuessedCorrectly': KNNGuessedCorrectly,
 		'KNNGuessedIncorrectly': testingSetSize - KNNGuessedCorrectly,
 		'KNNPercentGuessedCorrectly': KNNGuessedCorrectly / testingSetSize,
 		'SVMGuessedCorrectly': SVMGuessedCorrectly, 	
-		'SVMGuessedIncorrectly': 0 if trainWithOnlyLA else testingSetSize - SVMGuessedCorrectly, 
+		'SVMGuessedIncorrectly': testingSetSize - SVMGuessedCorrectly,
 		'SVMPercentGuessedCorrectly': SVMGuessedCorrectly / testingSetSize,
-		'BrianGuessedCorrectly': BrianGuessedCorrectly,
-		'BrianGuessedIncorrectly': testingSetSize - BrianGuessedCorrectly,
-		'BrianPercentGuessedCorrectly': BrianGuessedCorrectly / testingSetSize,
 		'percentFromLA': utils.participantCountFromLAInRange(minTrainingID, maxTrainingID) / trainingSetSize
+
 	}
 
 	return render(request, 'LApoll/compare.html', dataDict)
