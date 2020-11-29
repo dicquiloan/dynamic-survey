@@ -1,13 +1,11 @@
 from sklearn.neighbors import KNeighborsClassifier
 import functools
-from . import utils 
+from . import utilsClass
 
 
-
-
-def generateKNNModel(participantCollection, trainingQRCollection):
-	X = utils.answersAsFeaturesArray(participantCollection, trainingQRCollection)
-	y = utils.livesInLAAsTargetArray(participantCollection)
+def generateKNNModel(trainingQRCollection):
+	X = utilsClass.answersAsFeaturesArray(trainingQRCollection)
+	y = utilsClass.livesInLAAsTargetArray(trainingQRCollection)
 	#k is 5 by default
 	knnClassifier = KNeighborsClassifier()
 	knnClassifier.fit(X, y)
@@ -24,17 +22,22 @@ def generateKNNModel(minParticipantID, maxParticipantID):
 	knnClassifier.fit(X, y)
 
 	return knnClassifier
+
 '''
 
+def generateKNNCategorizationProbability(trainingQRCollection, testingQRCollection, participantCollection, participantID):
+	knnModel = generateKNNModel(trainingQRCollection)
+	return knnModel.predict_proba([utilsClass.answersFromParticipant(participantID, testingQRCollection)])[0][1]
+'''
 def generateKNNCategorizationProbability(minTrainingID, maxTrainingID, participantID):
 	knnModel = generateKNNModel(minTrainingID, maxTrainingID)
 	return knnModel.predict_proba([answersFromParticipant(participantID)])[0][1]
+'''
 
-
-def guessedCorrectly(minTrainingID, maxTrainingID, minTestingID, maxTestingID):
-	knnModel = generateKNNModel(minTrainingID, maxTrainingID)
-	livesInLAPredictionsList = knnModel.predict(utils.answersAsFeaturesArray(minTestingID, maxTestingID))
-	livesInLAList = utils.livesInLAAsTargetArray(minTestingID, maxTestingID)
+def guessedCorrectly(trainingQRCollection, testingQRCollection, participantCollection):
+	knnModel = generateKNNModel(trainingQRCollection)
+	livesInLAPredictionsList = knnModel.predict(utilsClass.answersAsFeaturesArray(testingQRCollection))
+	livesInLAList = utilsClass.livesInLAAsTargetArray(testingQRCollection)
 	total = 0
 	for i in range(0, len(livesInLAList)):
 		if livesInLAPredictionsList[i] == livesInLAList[i]:

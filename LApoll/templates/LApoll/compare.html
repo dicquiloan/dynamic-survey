@@ -33,7 +33,7 @@
 				</div>
 				<div class="formItem">
 					<label> only include participants from LA?
-						<input type="checkbox"> 
+						<input type="checkbox" name="trainWithOnlyLA" value={{trainWithOnlyLA}}> 
 					</label>
 					<input type="submit" value="update">	
 				</div>
@@ -46,9 +46,9 @@
 							<td>approach</td>
 							<td>training set size </td>
 							<td>testing set size </td>
-							<td>guessed correctly</td>
-							<td>guessed incorrectly </td> 
-							<td>% guessed correctly </td>
+							<td>categorized correctly</td>
+							<td>categorized incorrectly </td> 
+							<td>% categorized correctly </td>
 							<td>% of training set from LA </td>
 						</tr>
 					</thead>
@@ -86,6 +86,15 @@
 						<td>{{RBMGuessedCorrectly}}</td>
 						<td>{{RBMGuessedIncorrectly}}</td>
 						<td>{{RBMPercentGuessedCorrectly}}</td>
+						<td>{{percentFromLA}}</td>
+					</tr>
+					<tr>
+						<td>Brian's Algorithm</td>
+						<td>{{trainingSetSize}}</td>
+						<td>{{testingSetSize}}</td>
+						<td>{{BrianGuessedCorrectly}}</td>
+						<td>{{BrianGuessedIncorrectly}}</td>
+						<td>{{BrianPercentGuessedCorrectly}}</td>
 						<td>{{percentFromLA}}</td>
 					</tr>
 					<tr>
