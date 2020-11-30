@@ -1,42 +1,27 @@
-'''
-FOR EACH FUNCTION DEFINED, ADD COMMENT, 
-
-MAKE SURE TO MATCH FUNCTIONAL REQUIREMENTS
-'''
+from sklearn.linear_model import LogisticRegression
+import functools
+from . import utilsClass
 
 
+def generateLRModel(trainingQRCollection):
+	X = utilsClass.answersAsFeaturesArray(trainingQRCollection)
+	y = utilsClass.livesInLAAsTargetArray(trainingQRCollection)
+	return LogisticRegression(random_state=0).fit(X,y)
 
-'''
-NAME:
-	NAME
-	generateLRModel
-PARAMETERS: 
-	@param datatype name meaning
-	@param int      minId minimum participant database ID to generate model from
-RETURNS: 
-	@return LogisticRegressionObject sklearn lrmodel object that has been fit already using range 
-DESCRIPTION:
-	This function uses sk learn's LogisticRegression definitions to generate and 
-	fit a logistic regression estimator by generating a features array 
-	and target array from the database QuestionResponses in the range given. 
 
-(ifneeded)PSEUDOCODE
-'''
 
-def generateLRModel(minID, maxID):
-	#X = pull in features array
-	#y = pull in target array
 
-	lrModel = LogisticRegression(random_state=0)
-	lrModel.fit(X, y)
+def generateLRCategorizationProbability(trainingQRCollection, testingQRCollection, participantCollection, participantID):
+	lrModel = generateLRModel(trainingQRCollection)
+	return lrModel.predict_proba([utilsClass.answersFromParticipant(participantID, testingQRCollection)])[0][1]
 
-	return lrModel
-
-'''
-def generateLogisticRegressionProbability(minID, maxID, partipantID):
-	lrModel = generateLRModel(minID, maxID)
-
-	return asdasda
-
-'''
+def guessedCorrectly(trainingQRCollection, testingQRCollection, participantCollection):
+	lrModel = generateLRModel(trainingQRCollection)
+	livesInLAPredictionsList = lrModel.predict(utilsClass.answersAsFeaturesArray(testingQRCollection))
+	livesInLAList = utilsClass.livesInLAAsTargetArray(testingQRCollection)
+	total = 0
+	for i in range(0, len(livesInLAList)):
+		if livesInLAPredictionsList[i] == livesInLAList[i]:
+			total = total + 1
+	return total
 

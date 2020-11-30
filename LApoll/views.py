@@ -80,21 +80,31 @@ def showResults(request):
 	participantCollection = utilsClass.getParticipantsInRange(1, Participant.objects.count())
 
 	#generate classification probability for this participant using all previous
+	LRProb = lr.generateLRCategorizationProbability(trainingQRCollection, testingQRCollection, participantCollection, p.id)
 	KNNProb = knn.generateKNNCategorizationProbability(trainingQRCollection, testingQRCollection, participantCollection, p.id)
+	SVMProb = svm.generateSVMCategorizationProbability(trainingQRCollection, testingQRCollection, participantCollection, p.id)
 	brianProb = brianClass.BrianModel(trainingQRCollection, testingQRCollection,participantCollection).probabilityLivesInLA(p.id)
-
+	
 	#booleans for whether approaches classified correctly
-	KNNGuessedCorrectly = KNNProb > .5 if p.livesInLA else knnProb <=.5
+	LRGuessedCorrectly = LRProb > .5 if p.livesInLA else LAprob <=.5
+	KNNGuessedCorrectly = KNNProb > .5 if p.livesInLA else KNNProb <=.5
+	SVMGuessedCorrectly = SVMProb > .5 if p.livesInLA else SVMProb <=.5
 	BrianGuessedCorrectly = brianProb > .5 if p.livesInLA else brianProb <=.5
 
+	#data dictionary to be passed into template for rendering
 	dataDict = {
 		'responseList': QuestionResponse.objects.filter(participant=p),
 		'livesInLA': p.livesInLA,
 		'trainingSetSize': Participant.objects.count(),
+		'LRCategorizationProbability': LRProb,
+		'LRGuessedCorrectly': LRGuessedCorrectly,
 		'KNNCategorizationProbability': KNNProb,
 		'KNNGuessedCorrectly' : KNNGuessedCorrectly, 
+		'SVMCategorizationProbability': SVMProb,
+		'SVMGuessedCorrectly' : SVMGuessedCorrectly, 
 		'BrianCategorizationProbability': brianProb,
-		'BrianGuessedCorrectly': BrianGuessedCorrectly 
+		'BrianGuessedCorrectly': BrianGuessedCorrectly
+
 	}
 
 	return render(request, 'LApoll/results.html', dataDict)
@@ -141,14 +151,16 @@ def showComparison(request):
 	testingSetSize = testingQRCollection.filter(question__id =1).count()
 	
 	#make predictions
-	KNNGuessedCorrectly = knn.guessedCorrectly(trainingQRCollection, testingQRCollection, participantCollection)
-	#SVM algorithm needs target array with variation
+	#LR and SVM algorithm needs target array with variation
 	if trainWithOnlyLA:
 		SVMGuessedCorrectly = 0
+		LRGuessedCorrectly = 0
 	else:
 		SVMGuessedCorrectly = svm.guessedCorrectly(trainingQRCollection, testingQRCollection, participantCollection)
+		LRGuessedCorrectly = lr.guessedCorrectly(trainingQRCollection, testingQRCollection, participantCollection)
 
 	
+	KNNGuessedCorrectly = knn.guessedCorrectly(trainingQRCollection, testingQRCollection, participantCollection)
 	brianModel = brianClass.BrianModel(trainingQRCollection, testingQRCollection, participantCollection)
 	BrianGuessedCorrectly = brianModel.guessedCorrectly(.5)
 		
@@ -162,6 +174,9 @@ def showComparison(request):
 		'maxTestingID': maxTestingID,
 		'trainingSetSize': trainingSetSize,
 		'testingSetSize': testingSetSize, 	
+		'LRGuessedCorrectly': LRGuessedCorrectly,
+		'LRGuessedIncorrectly': 0 if trainWithOnlyLA else testingSetSize - LRGuessedCorrectly, 
+		'LRPercentGuessedCorrectly': LRGuessedCorrectly / testingSetSize,
 		'KNNGuessedCorrectly': KNNGuessedCorrectly,
 		'KNNGuessedIncorrectly': testingSetSize - KNNGuessedCorrectly,
 		'KNNPercentGuessedCorrectly': KNNGuessedCorrectly / testingSetSize,

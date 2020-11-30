@@ -33,16 +33,29 @@
 				<td>approach</td>
 				<td>training set size </td>
 				<td>confidence you live in LA </td>
-				<td>actually lives in LA </td>
+				<td>you actually live in LA </td>
 				<td>correct classification using .5 as cutoff</td>
 			</tr>
 		</thead>
 		<tr>
-			<td>KNN (k=5) </td>
+			<td>Logistic Regression</td>
+			<td>{{trainingSetSize}}</td>
+			<td>{{LRCategorizationProbability}}</td>
+			<td> {{livesInLA}} </td>
+			<td>{{LRGuessedCorrectly}}</td>
+		</tr>
+		<tr>
+			<td>K-Nearest Neighbors (k=5) </td>
 			<td>{{trainingSetSize}}</td>
 			<td>{{KNNCategorizationProbability}}</td>
 			<td> {{livesInLA}} </td>
 			<td>{{KNNGuessedCorrectly}}</td>
+		</tr>
+			<td>Support Vector Machine</td>
+			<td>{{trainingSetSize}}</td>
+			<td>{{SVMCategorizationProbability}}</td>
+			<td> {{livesInLA}} </td>
+			<td>{{SVMGuessedCorrectly}}</td>
 		</tr>
 		<tr>
 			<td>Brian's Algorithm</td>
