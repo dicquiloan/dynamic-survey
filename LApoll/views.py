@@ -74,21 +74,37 @@ def showResults(request):
 		qr = QuestionResponse(participant = p, question = Question.objects.get(pk=x+1), answer = responseList[x]['answer'], rating = responseList[x]['rating'])
 		qr.save()
 
-	#CALL MODEL GENERATING/PREDICTION ALGORITHMS HERE
+	#create model collection sets (should always include all participants except current)	
+	trainingQRCollection = utilsClass.getQuestionResponsesInParticipantRange(1, p.id -1);
+	testingQRCollection = utilsClass.getQuestionResponsesInParticipantRange(1, Participant.objects.count())
+	participantCollection = utilsClass.getParticipantsInRange(1, Participant.objects.count())
 
-	questionStatsList= [ {'avgAnswer': knn.avgQuestionAnswer(qid), 'avgRating': knn.avgQuestionRating(qid)} for qid in range(1,21) ] 	
+	#generate classification probability for this participant using all previous
+	LRProb = lr.generateLRCategorizationProbability(trainingQRCollection, testingQRCollection, participantCollection, p.id)
+	KNNProb = knn.generateKNNCategorizationProbability(trainingQRCollection, testingQRCollection, participantCollection, p.id)
+	SVMProb = svm.generateSVMCategorizationProbability(trainingQRCollection, testingQRCollection, participantCollection, p.id)
+	brianProb = brianClass.BrianModel(trainingQRCollection, testingQRCollection,participantCollection).probabilityLivesInLA(p.id)
 	
-	trainingQRCollection = utilsClass.getQuestionResponsesInRange(1, p.id -1);
-	testingQRCollection = utilsClass.getQuestionResponsesInRange(1, Participants.objects.count())
-	participantCollection = utilsClass.getParticipantsInRange(1, Participants.objects.count())
-	
+	#booleans for whether approaches classified correctly
+	LRGuessedCorrectly = LRProb > .5 if p.livesInLA else LAprob <=.5
+	KNNGuessedCorrectly = KNNProb > .5 if p.livesInLA else KNNProb <=.5
+	SVMGuessedCorrectly = SVMProb > .5 if p.livesInLA else SVMProb <=.5
+	BrianGuessedCorrectly = brianProb > .5 if p.livesInLA else brianProb <=.5
+
+	#data dictionary to be passed into template for rendering
 	dataDict = {
 		'responseList': QuestionResponse.objects.filter(participant=p),
 		'livesInLA': p.livesInLA,
-		#ADD VALUES TO DISPLAY HEREa
-		'questionStatsList': questionStatsList,
-		'KNNCategorizationProbability': knn.generateKNNCategorizationProbability(trainingQRCollection, testingQRCollection, p.id),
-		'BrianCategorizationProbability': bnn.BrianModel(trainingQRCollection, testingQRCollection,participantCollection).probabilityLivesInLA(p.id)
+		'trainingSetSize': Participant.objects.count(),
+		'LRCategorizationProbability': LRProb,
+		'LRGuessedCorrectly': LRGuessedCorrectly,
+		'KNNCategorizationProbability': KNNProb,
+		'KNNGuessedCorrectly' : KNNGuessedCorrectly, 
+		'SVMCategorizationProbability': SVMProb,
+		'SVMGuessedCorrectly' : SVMGuessedCorrectly, 
+		'BrianCategorizationProbability': brianProb,
+		'BrianGuessedCorrectly': BrianGuessedCorrectly
+
 	}
 
 	return render(request, 'LApoll/results.html', dataDict)
@@ -135,14 +151,16 @@ def showComparison(request):
 	testingSetSize = testingQRCollection.filter(question__id =1).count()
 	
 	#make predictions
-	KNNGuessedCorrectly = knn.guessedCorrectly(trainingQRCollection, testingQRCollection, participantCollection)
-	#SVM algorithm needs target array with variation
+	#LR and SVM algorithm needs target array with variation
 	if trainWithOnlyLA:
 		SVMGuessedCorrectly = 0
+		LRGuessedCorrectly = 0
 	else:
 		SVMGuessedCorrectly = svm.guessedCorrectly(trainingQRCollection, testingQRCollection, participantCollection)
+		LRGuessedCorrectly = lr.guessedCorrectly(trainingQRCollection, testingQRCollection, participantCollection)
 
 	
+	KNNGuessedCorrectly = knn.guessedCorrectly(trainingQRCollection, testingQRCollection, participantCollection)
 	brianModel = brianClass.BrianModel(trainingQRCollection, testingQRCollection, participantCollection)
 	BrianGuessedCorrectly = brianModel.guessedCorrectly(.5)
 		
@@ -156,6 +174,9 @@ def showComparison(request):
 		'maxTestingID': maxTestingID,
 		'trainingSetSize': trainingSetSize,
 		'testingSetSize': testingSetSize, 	
+		'LRGuessedCorrectly': LRGuessedCorrectly,
+		'LRGuessedIncorrectly': 0 if trainWithOnlyLA else testingSetSize - LRGuessedCorrectly, 
+		'LRPercentGuessedCorrectly': LRGuessedCorrectly / testingSetSize,
 		'KNNGuessedCorrectly': KNNGuessedCorrectly,
 		'KNNGuessedIncorrectly': testingSetSize - KNNGuessedCorrectly,
 		'KNNPercentGuessedCorrectly': KNNGuessedCorrectly / testingSetSize,

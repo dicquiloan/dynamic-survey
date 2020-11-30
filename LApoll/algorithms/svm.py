@@ -7,20 +7,14 @@ from . import utilsClass
 def generateSVMModel(trainingQRCollection):
 	X = utilsClass.answersAsFeaturesArray(trainingQRCollection)
 	y = utilsClass.livesInLAAsTargetArray(trainingQRCollection)
-	svmClassifier = SVC(gamma='auto').fit(X, y)
+	svmClassifier = SVC(gamma='auto', probability = True).fit(X, y)
 
 	return svmClassifier
 
 
-'''
-def generateSVMModel(minTrainingID, maxTrainingID):
-	X = utils.answersAsFeaturesArray(minTrainingID, maxTrainingID)
-	y = utils.livesInLAAsTargetArray(minTrainingID, maxTrainingID)
-	svmClassifier = SVC(gamma='auto').fit(X, y)
-
-	return svmClassifier
-'''
-#no ability to get confidence that a particular guess is correct for this classifier
+def generateSVMCategorizationProbability(trainingQRCollection, testingQRCollection, participantCollection, participantID):
+        svmModel = generateSVMModel(trainingQRCollection)
+        return svmModel.predict_proba([utilsClass.answersFromParticipant(participantID, testingQRCollection)])[0][1]
 
 def guessedCorrectly(trainingQRCollection, testingQRCollection, participantCollection):
         svmModel = generateSVMModel(trainingQRCollection)
