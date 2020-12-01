@@ -84,12 +84,14 @@ def showResults(request):
 	KNNProb = knn.generateKNNCategorizationProbability(trainingQRCollection, testingQRCollection, participantCollection, p.id)
 	SVMProb = svm.generateSVMCategorizationProbability(trainingQRCollection, testingQRCollection, participantCollection, p.id)
 	brianProb = brianClass.BrianModel(trainingQRCollection, testingQRCollection,participantCollection).probabilityLivesInLA(p.id)
+	chenProb = chenClass.ChenModel(trainingQRCollection, testingQRCollection,participantCollection).probabilityLivesInLA(p.id)
 	
 	#booleans for whether approaches classified correctly
 	LRGuessedCorrectly = LRProb > .5 if p.livesInLA else LAprob <=.5
 	KNNGuessedCorrectly = KNNProb > .5 if p.livesInLA else KNNProb <=.5
 	SVMGuessedCorrectly = SVMProb > .5 if p.livesInLA else SVMProb <=.5
 	BrianGuessedCorrectly = brianProb > .5 if p.livesInLA else brianProb <=.5
+	ChenGuessedCorrectly = chenProb > .5 if p.livesInLA else chenProb <=.5
 
 	#data dictionary to be passed into template for rendering
 	dataDict = {
@@ -104,6 +106,8 @@ def showResults(request):
 		'SVMGuessedCorrectly' : SVMGuessedCorrectly, 
 		'BrianCategorizationProbability': brianProb,
 		'BrianGuessedCorrectly': BrianGuessedCorrectly
+		'ChenCategorizationProbability': chenProb,
+		'ChenGuessedCorrectly': ChenGuessedCorrectly
 
 	}
 
@@ -186,6 +190,9 @@ def showComparison(request):
 		'BrianGuessedCorrectly': BrianGuessedCorrectly,
 		'BrianGuessedIncorrectly': testingSetSize - BrianGuessedCorrectly,
 		'BrianPercentGuessedCorrectly': BrianGuessedCorrectly / testingSetSize,
+		'ChenGuessedCorrectly': ChenGuessedCorrectly,
+		'CHenGuessedIncorrectly': testingSetSize - ChenGuessedCorrectly,
+		'CHenPercentGuessedCorrectly': ChenGuessedCorrectly / testingSetSize,
 		'percentFromLA': utils.participantCountFromLAInRange(minTrainingID, maxTrainingID) / trainingSetSize
 	}
 
