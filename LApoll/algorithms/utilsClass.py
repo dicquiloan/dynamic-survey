@@ -73,3 +73,24 @@ def sumOfAvgRatings(QuestionResponseCollection):
 
 def participantCountFromLAInRange(ParticipantCollection):
 	return ParticipantCollection.order_by("id").filter(livesInLA = 1).count()
+
+#TRANSFORMS##########################################
+def onOffVsMean(inputArray):
+	sum = functools.reduce(lambda x,y : x+y, inputArray, 0)
+	mean = sum / len(inputArray)
+
+	return [1 if x <= mean else 0 for x in inputArray]
+#COMPARE#############################
+def displayMatchStats(ar1, ar2):
+	if len(ar1) != len(ar2):
+		print('need same length')
+		return
+
+	matchCount = 0
+	for i in range (0, len(ar1)):
+		if ar1[i] == ar2[i]:
+			matchCount = matchCount +1 
+	
+	print("matching: {}, not-matching: {}, % correct: {}".format(matchCount, len(ar1)-matchCount, matchCount/len(ar1)))
+	
+

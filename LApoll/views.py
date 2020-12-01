@@ -111,11 +111,11 @@ def showResults(request):
 
 
 def showComparison(request):
-	#default min and max IDs extend the whole range of participants
+	#default train: 1-20, test: 21-40
 	minTrainingID = 1
-	maxTrainingID = Participant.objects.count()
-	minTestingID = 1
-	maxTestingID = Participant.objects.count()
+	maxTrainingID = 20
+	minTestingID = 21
+	maxTestingID = 40
 	trainWithOnlyLA = False
 		
 	#if the user hit submit button, use form submitted values for ID ranges
@@ -161,9 +161,10 @@ def showComparison(request):
 
 	
 	KNNGuessedCorrectly = knn.guessedCorrectly(trainingQRCollection, testingQRCollection, participantCollection)
+	RBMGuessedCorrectly = rbmBrian.guessedCorrectly(trainingQRCollection, testingQRCollection, participantCollection)
+
 	brianModel = brianClass.BrianModel(trainingQRCollection, testingQRCollection, participantCollection)
-	BrianGuessedCorrectly = brianModel.guessedCorrectly(.5)
-		
+	BrianGuessedCorrectly = brianModel.guessedCorrectly(.5)		
 	
 	dataDict = {
 		'minID' : 1,
@@ -183,6 +184,9 @@ def showComparison(request):
 		'SVMGuessedCorrectly': SVMGuessedCorrectly, 	
 		'SVMGuessedIncorrectly': 0 if trainWithOnlyLA else testingSetSize - SVMGuessedCorrectly, 
 		'SVMPercentGuessedCorrectly': SVMGuessedCorrectly / testingSetSize,
+		'RBMGuessedCorrectly': RBMGuessedCorrectly,
+		'RBMGuessedIncorrectly': testingSetSize - RBMGuessedCorrectly,
+		'RBMPercentGuessedCorrectly': RBMGuessedCorrectly / testingSetSize,
 		'BrianGuessedCorrectly': BrianGuessedCorrectly,
 		'BrianGuessedIncorrectly': testingSetSize - BrianGuessedCorrectly,
 		'BrianPercentGuessedCorrectly': BrianGuessedCorrectly / testingSetSize,
