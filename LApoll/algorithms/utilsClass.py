@@ -28,6 +28,17 @@ def answersAsFeaturesArray(QuestionResponseCollection):
 		twoDimensionalFeaturesList.append(answersFromParticipant(pid, QuestionResponseCollection))
 	return numpy.array(twoDimensionalFeaturesList)
 
+def answersAsFeaturesArray_ChenAlgo(QuestionResponseCollection):
+	more_crazy = []
+	twoDimensionalFeaturesList = []
+	for pid in QuestionResponseCollection.values_list("participant__id", flat=True).distinct():
+		twoDimensionalFeaturesList.append(answersFromParticipant(pid, QuestionResponseCollection))
+	twoDimensionalFeaturesList_Rating = []
+	for pid in QuestionResponseCollection.values_list("participant__id", flat=True).distinct():
+		twoDimensionalFeaturesList_Rating.append(ratingFromParticipant(pid, QuestionResponseCollection))
+	more_crazy = np.concatenate((twoDimensionalFeaturesList,twoDimensionalFeaturesList_Rating),axis=1)
+	return numpy.array(more_crazy)
+
 #TARGET ARRAYS########################################################################
 
 def livesInLAAsTargetArray(QuestionResponseCollection):
@@ -69,6 +80,8 @@ def ratingAvgForQuestion(qid, QuestionResponseCollection):
 def sumOfAvgRatings(QuestionResponseCollection):
 	return functools.reduce(lambda x,y : x+y, [ratingAvgForQuestion(x, QuestionResponseCollection) for x in range(1, 21)])
 
+def ratingFromParticipant(pid, QuestionResponseCollection):
+	return numpy.array([qr.rating for qr in QuestionResponseCollection.order_by("participant__id").filter(participant__id = pid)])
 #PARTICIPANTS##########################################################################
 
 def participantCountFromLAInRange(ParticipantCollection):
